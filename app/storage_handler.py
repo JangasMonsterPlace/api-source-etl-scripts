@@ -32,4 +32,4 @@ def upload_file(file_name, file_data):
 
 if __name__ == "__main__":
 
-    print(list_contents())
+    list_contents()
