@@ -4,7 +4,8 @@ from .settings import POSTGRES
 
 class _DB:
     def __init__(self):
-        self._connect()
+        pass
+        # self._connect()
 
     def _connect(self):
         self.conn = psycopg2.connect(**POSTGRES)

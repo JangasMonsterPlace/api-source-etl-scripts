@@ -16,12 +16,6 @@ class _TwitterRunner:
 
     @staticmethod
     def _tweet_is_valid(tweet: Status) -> bool:
-        if tweet.full_text.startswith("RT"):
-            # Replace tweet with original
-            # tweet.full_text = tweet.retweeted_status.full_text
-
-            # continue - no retweets wanted
-            return False
         if len(tweet.entities["hashtags"]) > 5:
             return False
         return True
@@ -48,9 +42,18 @@ class _TwitterRunner:
             tuple(tweet.__dict__.values())
             for tweet in self.extract_and_transform_tweets(hashtag)
         ]
-        ORM.insert_transformed_review_data(data)
+        print(data)
+        # ORM.insert_transformed_review_data(data)
 
 
-def runner():
+def runner(until: str = "0-0-0", since: str = "0-0-0", hashtag: str = "python", date_range: bool = False, replies: bool = True ) -> None:
     twitter_runner = _TwitterRunner()
-    twitter_runner.etl("python")
+    query = f"{hashtag} -filter:retweets lang:en"
+    if date_range:
+        query += f" since:{since} until:{until}"
+    if replies:
+        query += " -filter:replies"
+    print(query)
+    twitter_runner.etl(query)
+    # twitter_runner.etl(f"{hashtag}  -filter:replies until:{until} since:{since} -filter:retweets lang:en")
+
