@@ -21,7 +21,7 @@ def main():
     logger.info("Start Process")
     # twitter_runner()
     # csv_runner()
-    google_storage_runner()
+    # google_storage_runner()
 
 
 if __name__ == "__main__":
