@@ -1,5 +1,6 @@
 from google.cloud import storage
 from dotenv import load_dotenv
+from .settings import GCS_BUCKET_NAME as BUCKET_NAME
 
 import json
 
@@ -7,15 +8,13 @@ load_dotenv()
 
 storage_client = storage.Client()
 
-BUCKET_NAME = "altair-janga"
-
 bucket = storage_client.get_bucket(BUCKET_NAME)
 
-def list_contents():
+def list_contents(prefix = ""):
 
     blob_name_list = []
 
-    blobs = list(bucket.list_blobs())
+    blobs = list(bucket.list_blobs(prefix=prefix))
 
     for blob in blobs:
 
@@ -51,9 +50,9 @@ def delete_bucket(bucket_name):
 
     return bucket
 
-def download_blob(bucket_name, source_blob_name, destination_file_name):
+def download_blob(source_blob_name, destination_file_name):
     
-    bucket = storage_client.get_bucket(bucket_name)
+    bucket = storage_client.get_bucket(BUCKET_NAME)
 
     blob = bucket.blob(source_blob_name)
 

@@ -3,11 +3,11 @@ import sys
 
 from twitter import runner as twitter_runner
 from csv_handler import runner as csv_runner
+from google_storage import runner as google_storage_runner
 
 from dotenv import load_dotenv
 
 load_dotenv()
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -19,8 +19,9 @@ logger.addHandler(sh)
 
 def main():
     logger.info("Start Process")
-    twitter_runner()
+    # twitter_runner()
     # csv_runner()
+    google_storage_runner()
 
 
 if __name__ == "__main__":
