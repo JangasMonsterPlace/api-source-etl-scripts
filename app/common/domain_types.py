@@ -8,6 +8,7 @@ class TransformedTextData:
     id: str
     source: str     # twitter, youtube, file, ...
     text: str
-    user: str
-    written_by_user_at: datetime
+    use_case: str
+    written_by_user_at: Optional[datetime] = None
+    user: Optional[str] = None
     sentiment: Optional[float] = None

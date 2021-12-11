@@ -39,7 +39,8 @@ class _TwitterRunner:
                 source="twitter",
                 text=tweet.full_text,
                 user=tweet.author.screen_name.lower(),
-                written_by_user_at=tweet.created_at
+                written_by_user_at=tweet.created_at,
+                use_case=f"#{hashtag}"
             )
 
     def etl(self, hashtag: str):
