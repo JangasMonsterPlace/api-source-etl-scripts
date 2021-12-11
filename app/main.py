@@ -1,6 +1,7 @@
 import logging
 import sys
 
+from twitter import runner as twitter_runner
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,6 +17,7 @@ logger.addHandler(sh)
 
 def main():
     logger.info("Start Process")
+    twitter_runner()
 
 
 if __name__ == "__main__":
