@@ -19,7 +19,8 @@ logger.addHandler(sh)
 
 def main():
     logger.info("Start Process")
-    csv_runner()
+    twitter_runner()
+    # csv_runner()
 
 
 if __name__ == "__main__":
