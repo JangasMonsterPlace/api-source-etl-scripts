@@ -33,11 +33,33 @@ class _gcs_loader:
 
         return True
 
+    def move_to_backup(self):
+
+        list_of_files = storage_handler.list_contents(prefix=self.primary_folder_name)
+
+        list_of_files.remove(self.primary_folder_name + "/")
+
+        for single_file_name in list_of_files:
+
+            destination_blob_name = f"{self.backup_folder_name}/{single_file_name.split('/')[-1]}"
+
+            source_blob = storage_handler.bucket.blob(single_file_name)
+
+            destination_blob_name = single_file_name
+
+            blob_copy = storage_handler.bucket.copy_blob(
+                source_blob, self.bucket_name, destination_blob_name
+            )
+
+            storage_handler.bucket.delete_blob(source_blob)
+
 def runner():
 
     gcs_runner = _gcs_loader()
 
     gcs_runner.etl()
+
+    gcs_runner.move_to_backup()
 
 if __name__ == "__main__":
 
