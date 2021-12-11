@@ -25,7 +25,7 @@ def read_file(file_name):
 
     blob = bucket.blob(file_name)
 
-    return blob.download_as_string()
+    return blob.download_as_string() # Returns a byte encoded string
 
 def upload_file(file_name, file_data):
 
