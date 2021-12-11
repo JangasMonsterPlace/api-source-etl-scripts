@@ -33,6 +33,20 @@ def upload_file(file_name, file_data):
 
     return blob
 
+def create_bucket(bucket_name):
+
+    bucket = storage_client.create_bucket(bucket_name)
+
+    return bucket
+
+def delete_bucket(bucket_name):
+    
+    bucket = storage_client.get_bucket(bucket_name)
+
+    bucket.delete()
+
+    return bucket
+
 if __name__ == "__main__":
 
     list_contents()
