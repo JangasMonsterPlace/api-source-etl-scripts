@@ -42,8 +42,7 @@ class _TwitterRunner:
             tuple(tweet.__dict__.values())
             for tweet in self.extract_and_transform_tweets(hashtag)
         ]
-        print(data)
-        # ORM.insert_transformed_review_data(data)
+        ORM.insert_transformed_review_data(data)
 
 
 def runner(until: str = "0-0-0", since: str = "0-0-0", hashtag: str = "python", date_range: bool = False, replies: bool = True ) -> None:
@@ -55,5 +54,6 @@ def runner(until: str = "0-0-0", since: str = "0-0-0", hashtag: str = "python", 
         query += " -filter:replies"
     print(query)
     twitter_runner.etl(query)
-    # twitter_runner.etl(f"{hashtag}  -filter:replies until:{until} since:{since} -filter:retweets lang:en")
+    # left here for reference - nice to know we are uising twitter search api 1.1 hence we can build queries using common twitter app  
+    # twitter_runner.etl(f"{hashtag}  -filter:replies until:{until} since:{since} -filter:retweets lang:en") 
 
