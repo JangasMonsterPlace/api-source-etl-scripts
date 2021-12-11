@@ -1,7 +1,7 @@
 import logging
 from common import settings, storage_handler
 from common.domain_types import TransformedTextData
-from common.postgres import _DB
+from common.postgres import _db
 import pandas as pd
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class _gcs_loader:
         self.primary_folder_name = settings.GCS_PRIMARY_FOLDER_NAME
         self.backup_folder_name = settings.GCS_BACKUP_FOLDER_NAME
         self.bucket_name        = settings.GCS_BUCKET_NAME
-        self.engine = _DB._engine()
+        self.engine = _db._engine()
 
     def etl(self):
 
@@ -23,7 +23,7 @@ class _gcs_loader:
 
         for single_file_name in list_of_files:
 
-            only_file_name = single_file_name.split("/")[-1] # get only the file name
+            only_file_name = single_file_name.split("/")[-1].replace(".csv", "") # get only the file name
 
             file_path = f"gs://{self.bucket_name}/{single_file_name}"
 

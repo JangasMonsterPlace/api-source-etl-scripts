@@ -13,7 +13,7 @@ class _DB:
 
     def _engine(self):
         
-        return create_engine('postgresql://{user}:{password}@{host}:{port}/{db}'.format(**POSTGRES))
+        return create_engine('postgresql://{user}:{password}@{host}:{port}/{database}'.format(**POSTGRES))
 
 
 
