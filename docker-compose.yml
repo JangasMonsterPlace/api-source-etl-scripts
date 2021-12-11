@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  api-source-etl-scripts:
+    build: .
+    container_name: api-source-etl-scripts
+    volumes:
+      - ./app:/app
