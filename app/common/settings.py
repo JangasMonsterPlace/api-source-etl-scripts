@@ -22,7 +22,6 @@ TWITTER = {
         "secret": os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
     }
 }
-
 POSTGRES = {
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
