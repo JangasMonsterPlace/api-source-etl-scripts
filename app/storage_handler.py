@@ -13,13 +13,15 @@ bucket = storage_client.get_bucket(BUCKET_NAME)
 
 def list_contents():
 
+    blob_name_list = []
+
     blobs = list(bucket.list_blobs())
 
     for blob in blobs:
 
-        print(blob.name)
+        blob_name_list.append(blob.name)
 
-    return blobs
+    return blob_name_list
 
 def read_file(file_name):
 
