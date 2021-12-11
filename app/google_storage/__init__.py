@@ -21,6 +21,12 @@ class _gcs_loader:
 
         list_of_files.remove(self.primary_folder_name + "/")
 
+        if not list_of_files:
+
+            print(f"No files found in {self.primary_folder_name} folder")
+
+            return False
+
         for single_file_name in list_of_files:
 
             only_file_name = single_file_name.split("/")[-1].replace(".csv", "") # get only the file name
@@ -29,7 +35,7 @@ class _gcs_loader:
 
             current_file_data = pd.read_csv(file_path) # pandas dataframe
 
-            current_file_data.to_sql(only_file_name, self.engine, if_exists="fail")
+            current_file_data.to_sql(only_file_name, self.engine, if_exists="replace", index=False)
 
         return True
 
@@ -45,13 +51,11 @@ class _gcs_loader:
 
             source_blob = storage_handler.bucket.blob(single_file_name)
 
-            destination_blob_name = single_file_name
-
-            blob_copy = storage_handler.bucket.copy_blob(
-                source_blob, self.bucket_name, destination_blob_name
+            blob_move = storage_handler.bucket.rename_blob(
+                source_blob, destination_blob_name
             )
 
-            storage_handler.bucket.delete_blob(source_blob)
+        return True
 
 def runner():
 
