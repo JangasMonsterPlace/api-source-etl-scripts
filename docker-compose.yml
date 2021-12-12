@@ -3,7 +3,7 @@ version: "3"
 services:
   api-source-etl-scripts-twitter:
     build: .
-    container_name: "api-source-etl-scripts-${mode}"
+    container_name: "api-source-etl-scripts-twitter"
     command: "python main.py twitter"
     env_file:
       - ./app/.env
