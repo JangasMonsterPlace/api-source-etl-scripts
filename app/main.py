@@ -2,6 +2,9 @@ import logging
 import sys
 import argparse
 
+from time import sleep
+import uuid
+
 from twitter import runner as twitter_runner
 from csv_handler import runner as csv_runner
 
@@ -33,6 +36,9 @@ def parse_cmd_args() -> dict:
 
 def main():
     logger.info("Start Process")
+    while True:
+        logger.info(f"Hi there! {uuid.uuid4().hex}")
+        sleep(1)
     args = parse_cmd_args()
     RUNNERS[args["runner"]]()
 
