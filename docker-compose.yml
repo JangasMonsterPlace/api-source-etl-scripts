@@ -4,5 +4,7 @@ services:
   api-source-etl-scripts:
     build: .
     container_name: api-source-etl-scripts
+    env_file:
+      - /app/.env
     volumes:
       - ./app:/app
