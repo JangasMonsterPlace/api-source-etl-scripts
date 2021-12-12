@@ -37,7 +37,7 @@ POSTGRES = {
 CONFLUENT_KAFKA = {
     "bootstrap.servers": os.getenv("KAFKA_CLUSTER_SERVER"),
     "group.id": f"ngrams-{uuid.uuid4().hex[:6]}",
-    'auto.offset.reset': 'earliest',
+    'auto.offset.reset': 'latest',
     'security.protocol': 'SASL_SSL',
     'sasl.mechanisms': 'PLAIN',
     'sasl.username': os.getenv("KAFKA_CLUSTER_API_KEY"),
