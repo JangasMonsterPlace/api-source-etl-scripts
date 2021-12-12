@@ -1,5 +1,6 @@
 import logging
 import sys
+import argparse
 
 from twitter import runner as twitter_runner
 from csv_handler import runner as csv_runner
@@ -22,9 +23,16 @@ RUNNERS = {
 }
 
 
+def parse_cmd_args() -> dict:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("runner")
+    return vars(parser.parse_known_args()[0])
+
+
 def main():
     logger.info("Start Process")
-    RUNNERS["twitter"]()
+    args = parse_cmd_args()
+    RUNNERS[args["runner"]]()
 
 
 if __name__ == "__main__":

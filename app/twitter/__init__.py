@@ -1,9 +1,11 @@
 import logging
 import tweepy
+import json
 from typing import Generator, Optional
 from common import settings, ORM
 from common.domain_types import TransformedTextData
 from tweepy.models import Status
+from common.kafka_consumer import consumer
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +17,8 @@ class _TwitterRunner:
             *,
             until: Optional[str] = None,
             since: Optional[str] = None,
-            replies: bool = False
+            replies: bool = False,
+            **kwargs
     ):
         auth = tweepy.OAuthHandler(**settings.TWITTER["oauth_handler"])
         auth.set_access_token(**settings.TWITTER["access_token"])
@@ -66,8 +69,23 @@ class _TwitterRunner:
 
 
 def runner() -> None:
-    # Example for Values:
-    # https://github.com/JangasMonsterPlace/api-source-etl-scripts/blob/9bb29776d8c114b6009a0e1c1e5176d1b11470d2/app/twitter/__init__.py#L49
-    twitter_runner = _TwitterRunner(hashtag="python")
-    twitter_runner.etl()
-
+    consumer.subscribe(["jobs-source"])
+    while True:
+        try:
+            msg = consumer.poll(timeout=1)
+            if msg is None:
+                logger.info("No Message Received. Wait for polling.")
+                continue
+            elif msg.error():
+                logger.error(msg.error())
+            else:
+                logger.info("msg received")
+                msg = json.loads(msg.value().decode())
+                if not isinstance(msg["info"], dict):
+                    msg["info"] = json.loads(msg["info"])
+                # Example for Values:
+                # https://github.com/JangasMonsterPlace/api-source-etl-scripts/blob/9bb29776d8c114b6009a0e1c1e5176d1b11470d2/app/twitter/__init__.py#L49
+                twitter_runner = _TwitterRunner(**msg["info"])
+                twitter_runner.etl()
+        except Exception as e:
+            logger.error(str(e))

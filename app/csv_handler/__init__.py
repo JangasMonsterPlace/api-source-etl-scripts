@@ -6,6 +6,7 @@ from datetime import datetime
 from dataclasses import dataclass
 from common import settings, ORM
 from common.domain_types import TransformedTextData
+from time import sleep
 
 from .gcp_storage import GCS
 
@@ -59,5 +60,10 @@ class _CsvRunner:
 
 
 def runner():
-    csv_runner = _CsvRunner()
-    csv_runner.etl()
+    while True:
+        try:
+            csv_runner = _CsvRunner()
+            csv_runner.etl()
+        except Exception as e:
+            logger.exception(str(e))
+        sleep(1)

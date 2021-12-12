@@ -1,4 +1,5 @@
 import os
+import uuid
 
 from dotenv import load_dotenv
 
@@ -30,4 +31,15 @@ POSTGRES = {
     "host": os.getenv("DB_HOST"),
     "port": int(os.getenv("DB_PORT")),
     "database": os.getenv("DB_NAME")
+}
+
+
+CONFLUENT_KAFKA = {
+    "bootstrap.servers": os.getenv("KAFKA_CLUSTER_SERVER"),
+    "group.id": f"ngrams-{uuid.uuid4().hex[:6]}",
+    'auto.offset.reset': 'earliest',
+    'security.protocol': 'SASL_SSL',
+    'sasl.mechanisms': 'PLAIN',
+    'sasl.username': os.getenv("KAFKA_CLUSTER_API_KEY"),
+    'sasl.password': os.getenv("KAFKA_CLUSTER_API_SECRET")
 }
