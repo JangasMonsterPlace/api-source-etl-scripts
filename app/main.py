@@ -3,7 +3,6 @@ import sys
 
 from twitter import runner as twitter_runner
 from csv_handler import runner as csv_runner
-from google_storage import runner as google_storage_runner
 
 from dotenv import load_dotenv
 
@@ -17,11 +16,15 @@ sh.setFormatter(fmt)
 logger.addHandler(sh)
 
 
+RUNNERS = {
+    "twitter": twitter_runner,
+    "csv": csv_runner
+}
+
+
 def main():
     logger.info("Start Process")
-    # twitter_runner()
-    # csv_runner()
-    # google_storage_runner()
+    RUNNERS["twitter"]()
 
 
 if __name__ == "__main__":

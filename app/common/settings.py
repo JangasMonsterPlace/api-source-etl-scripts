@@ -4,13 +4,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GCS_BUCKET_NAME = "altair-janga"
-
-GCS_PRIMARY_FOLDER_NAME = "data"
-
-GCS_BACKUP_FOLDER_NAME = "backup"
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+GCP_STORAGE = {
+    "credentials_file_path": os.path.join(BASE_DIR, ".google-service-account-file.json"),
+    "primary_folder_name": os.getenv("PRIMARY_FOLDER_NAME"),
+    "backup_folder_name": os.getenv("BACKUP_FOLDER_NAME"),
+    "bucket_name": os.getenv("BUCKET_NAME")
+}
 
 TWITTER = {
     "oauth_handler": {
@@ -22,6 +23,7 @@ TWITTER = {
         "secret": os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
     }
 }
+
 POSTGRES = {
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),

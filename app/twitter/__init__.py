@@ -1,6 +1,6 @@
 import logging
 import tweepy
-from typing import Generator
+from typing import Generator, Optional
 from common import settings, ORM
 from common.domain_types import TransformedTextData
 from tweepy.models import Status
@@ -9,10 +9,22 @@ logger = logging.getLogger(__name__)
 
 
 class _TwitterRunner:
-    def __init__(self):
+    def __init__(
+            self,
+            hashtag: Optional[str] = None,
+            *,
+            until: Optional[str] = None,
+            since: Optional[str] = None,
+            replies: bool = False
+    ):
         auth = tweepy.OAuthHandler(**settings.TWITTER["oauth_handler"])
         auth.set_access_token(**settings.TWITTER["access_token"])
         self.api = tweepy.API(auth, wait_on_rate_limit=True)
+
+        self.from_date = since
+        self.to_date = until
+        self.hashtag = hashtag
+        self.replies = replies
 
     @staticmethod
     def _tweet_is_valid(tweet: Status) -> bool:
@@ -20,40 +32,42 @@ class _TwitterRunner:
             return False
         return True
 
-    def extract_tweets(self, hashtag: str) -> Generator[Status, None, None]:
-        for tweet in self.api.search_tweets(q=f"#{hashtag}", tweet_mode="extended", count=100):
+    def _get_query(self) -> str:
+        query = f"#{self.hashtag} -filter:retweets lang:en"
+        if self.from_date and self.to_date:
+            query += f" since:{self.from_date} until:{self.to_date}"
+        if self.replies:
+            query += " -filter:replies"
+        return query
+
+    def extract_tweets(self) -> Generator[Status, None, None]:
+        for tweet in self.api.search_tweets(q=self._get_query(), tweet_mode="extended", count=100):
             if not self._tweet_is_valid(tweet):
                 continue
             yield tweet
 
-    def extract_and_transform_tweets(self, hashtag: str) -> Generator[TransformedTextData, None, None]:
-        for tweet in self.extract_tweets(hashtag):
+    def extract_and_transform_tweets(self) -> Generator[TransformedTextData, None, None]:
+        for tweet in self.extract_tweets():
             yield TransformedTextData(
-                id=tweet.id,
+                source_id=tweet.id,
                 source="twitter",
                 text=tweet.full_text,
-                user=tweet.author.screen_name.lower(),
+                author=tweet.author.screen_name.lower(),
                 written_by_user_at=tweet.created_at,
-                use_case=f"#{hashtag}"
+                use_case=f"#{self.hashtag}"
             )
 
-    def etl(self, hashtag: str):
+    def etl(self):
         data = [
             tuple(tweet.__dict__.values())
-            for tweet in self.extract_and_transform_tweets(hashtag)
+            for tweet in self.extract_and_transform_tweets()
         ]
         ORM.insert_transformed_review_data(data)
 
 
-def runner(until: str = "0-0-0", since: str = "0-0-0", hashtag: str = "python", date_range: bool = False, replies: bool = True ) -> None:
-    twitter_runner = _TwitterRunner()
-    query = f"{hashtag} -filter:retweets lang:en"
-    if date_range:
-        query += f" since:{since} until:{until}"
-    if replies:
-        query += " -filter:replies"
-    print(query)
-    twitter_runner.etl(query)
-    # left here for reference - nice to know we are uising twitter search api 1.1 hence we can build queries using common twitter app  
-    # twitter_runner.etl(f"{hashtag}  -filter:replies until:{until} since:{since} -filter:retweets lang:en") 
+def runner() -> None:
+    # Example for Values:
+    # https://github.com/JangasMonsterPlace/api-source-etl-scripts/blob/9bb29776d8c114b6009a0e1c1e5176d1b11470d2/app/twitter/__init__.py#L49
+    twitter_runner = _TwitterRunner(hashtag="python")
+    twitter_runner.etl()
 
