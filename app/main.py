@@ -36,9 +36,6 @@ def parse_cmd_args() -> dict:
 
 def main():
     logger.info("Start Process")
-    while True:
-        logger.info(f"Hi there! {uuid.uuid4().hex}")
-        sleep(1)
     args = parse_cmd_args()
     RUNNERS[args["runner"]]()
 
