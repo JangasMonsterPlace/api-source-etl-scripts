@@ -1,5 +1,6 @@
 import logging
 import tweepy
+import sys
 import json
 from typing import Generator, Optional
 from common import settings, ORM
@@ -8,6 +9,13 @@ from tweepy.models import Status
 from common.kafka_consumer import consumer
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+fmt = logging.Formatter("%(asctime)s %(levelname)-8s %(name)-30s %(message)s")
+sh = logging.StreamHandler(sys.stderr)
+sh.setFormatter(fmt)
+logger.addHandler(sh)
+file_logger = logging.FileHandler("app.log")
+logger.addHandler(file_logger)
 
 
 class _TwitterRunner:

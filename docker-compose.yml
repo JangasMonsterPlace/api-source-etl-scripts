@@ -1,10 +1,19 @@
 version: "3"
 
 services:
-  api-source-etl-scripts:
+  api-source-etl-scripts-twitter:
     build: .
     container_name: "api-source-etl-scripts-${mode}"
-    command: "python main.py ${mode}"
+    command: "python main.py twitter"
+    env_file:
+      - ./app/.env
+    volumes:
+      - ./app:/app
+
+  api-source-etl-scripts-csv:
+    build: .
+    container_name: "api-source-etl-scripts-csv"
+    command: "python main.py csv"
     env_file:
       - ./app/.env
     volumes:

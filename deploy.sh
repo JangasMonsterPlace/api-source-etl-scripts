@@ -4,6 +4,6 @@ docker stop logstash-service-etl
 
 git pull origin master
 
-mode=twitter docker-compose up --build -d api-source-etl-scripts
-mode=csv docker-compose up --build -d api-source-etl-scripts
+mode=twitter docker-compose up -d api-source-etl-scripts
+mode=csv docker-compose up -d api-source-etl-scripts
 docker-compose up -d logstash-service

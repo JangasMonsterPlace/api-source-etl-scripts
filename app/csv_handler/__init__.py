@@ -1,6 +1,7 @@
 import logging
 import os
 import csv
+import sys
 from typing import Generator
 from datetime import datetime
 from dataclasses import dataclass
@@ -12,6 +13,13 @@ from .gcp_storage import GCS
 
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+fmt = logging.Formatter("%(asctime)s %(levelname)-8s %(name)-30s %(message)s")
+sh = logging.StreamHandler(sys.stderr)
+sh.setFormatter(fmt)
+logger.addHandler(sh)
+file_logger = logging.FileHandler("app.log")
+logger.addHandler(file_logger)
 
 
 @dataclass
@@ -56,7 +64,11 @@ class _CsvRunner:
             tuple(row.__dict__.values())
             for row in self.extract_and_transform_document()
         ]
-        ORM.insert_transformed_review_data(data)
+        if len(data) > 0:
+            logger.info(f"Insert {len(data)} Rows into database")
+            ORM.insert_transformed_review_data(data)
+        else:
+            logger.info("No data. Waiting ... ")
 
 
 def runner():
