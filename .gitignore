@@ -8,3 +8,4 @@ virtualenv/
 .google-service-account-file.json
 *.log*
 altair-*.json
+app.log

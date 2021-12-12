@@ -11,16 +11,11 @@ services:
       - ./app:/app
 
   logstash-service:
-
     build: ./logstash/
-
     command: logstash -f /logstash.conf
-
     ports:
-    - "9200:9200"
-
-    container_name: logstash-service-etl
-
+      - "9200:9200"
+    container_name: logstash-service-etl-${mode}
     env_file:
       - ./app/.env
     volumes:
