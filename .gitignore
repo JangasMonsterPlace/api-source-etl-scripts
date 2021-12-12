@@ -6,3 +6,5 @@ __pycache__/
 venv/
 virtualenv/
 .google-service-account-file.json
+*.log*
+altair-*.json

@@ -3,8 +3,26 @@ version: "3"
 services:
   api-source-etl-scripts:
     build: .
-    container_name: api-source-etl-scripts
+    container_name: "api-source-etl-scripts-${mode}"
+    command: "python main.py ${mode}"
     env_file:
-      - /app/.env
+      - ./app/.env
     volumes:
       - ./app:/app
+
+  logstash-service:
+
+    build: ./logstash/
+
+    command: logstash -f /logstash.conf
+
+    ports:
+    - "9200:9200"
+
+    container_name: logstash-service-etl
+
+    env_file:
+      - ./app/.env
+    volumes:
+      - ./app/app.log:/app.log:ro
+      - ./logstash/logstash.conf:/logstash.conf
